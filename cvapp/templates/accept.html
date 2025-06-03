@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }}{% else %}CV Oluştur{% endif %} - CV Generator</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+</head>
+<body>
+    <div class="main-container">
+        <div class="content-wrapper fade-in">
+            <!-- Header -->
+            <div class="header">
+                <h1><i class="fas fa-file-alt me-3"></i>CV Generator</h1>
+                <p>Profesyonel CV'nizi kolayca oluşturun</p>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-tabs">
+                <a href="{% url 'accept' %}" class="nav-link active">
+                    <i class="fas fa-plus-circle me-2"></i>Yeni CV Oluştur
+                </a>
+                <a href="{% url 'profile_list' %}" class="nav-link">
+                    <i class="fas fa-list me-2"></i>CV Listesi
+                </a>
+            </div>
+            
+            <!-- Form Container -->
+            <div class="form-container">
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} fade-in" role="alert">
+                            {% if 'safe' in message.tags %}
+                                {{ message|safe }}
+                            {% else %}
+                                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+                                {{ message }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <form method="post" id="cv-form" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Personal Information Section -->
+                    <div class="section-header">
+                        <h3><i class="fas fa-user me-2"></i>Kişisel Bilgiler</h3>
+                        <p class="text-muted">Temel kişisel bilgilerinizi giriniz</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% if form.name.help_text %}
+                                    <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.help_text %}
+                                    <small class="form-text text-muted">{{ form.email.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.help_text %}
+                                    <small class="form-text text-muted">{{ form.phone.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.address.id_for_label }}" class="form-label">{{ form.address.label }}</label>
+                                {{ form.address }}
+                                {% if form.address.help_text %}
+                                    <small class="form-text text-muted">{{ form.address.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Professional Summary -->
+                    <div class="section-header mt-4">
+                        <h3><i class="fas fa-briefcase me-2"></i>Profesyonel Özet</h3>
+                        <p class="text-muted">Kendinizi ve kariyerinizi tanıtın</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.summary.id_for_label }}" class="form-label">{{ form.summary.label }}</label>
+                        {{ form.summary }}
+                        {% if form.summary.help_text %}
+                            <small class="form-text text-muted">{{ form.summary.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Education Section -->
+                    <div class="section-header mt-4">
+                        <h3><i class="fas fa-graduation-cap me-2"></i>Eğitim Bilgileri</h3>
+                        <p class="text-muted">Eğitim geçmişinizi paylaşın</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.degree.id_for_label }}" class="form-label">{{ form.degree.label }}</label>
+                                {{ form.degree }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.school.id_for_label }}" class="form-label">{{ form.school.label }}</label>
+                                {{ form.school }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.university.id_for_label }}" class="form-label">{{ form.university.label }}</label>
+                                {{ form.university }}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="{{ form.graduation_year.id_for_label }}" class="form-label">{{ form.graduation_year.label }}</label>
+                                {{ form.graduation_year }}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="{{ form.gpa.id_for_label }}" class="form-label">{{ form.gpa.label }}</label>
+                                {{ form.gpa }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Work Experience Section -->
+                    <div class="section-header mt-4">
+                        <h3><i class="fas fa-building me-2"></i>İş Deneyimi</h3>
+                        <p class="text-muted">Çalışma geçmişinizi detaylandırın</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.previous_work.id_for_label }}" class="form-label">{{ form.previous_work.label }}</label>
+                        {{ form.previous_work }}
+                        {% if form.previous_work.help_text %}
+                            <small class="form-text text-muted">{{ form.previous_work.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="{{ form.current_position.id_for_label }}" class="form-label">{{ form.current_position.label }}</label>
+                                {{ form.current_position }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form.experience_years.id_for_label }}" class="form-label">{{ form.experience_years.label }}</label>
+                                {{ form.experience_years }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Skills Section -->
+                    <div class="section-header mt-4">
+                        <h3><i class="fas fa-cogs me-2"></i>Beceriler ve Yetenekler</h3>
+                        <p class="text-muted">Teknik ve kişisel becerilerinizi listeleyin</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.skills.id_for_label }}" class="form-label">{{ form.skills.label }}</label>
+                        {{ form.skills }}
+                        {% if form.skills.help_text %}
+                            <small class="form-text text-muted">{{ form.skills.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.languages.id_for_label }}" class="form-label">{{ form.languages.label }}</label>
+                        {{ form.languages }}
+                        {% if form.languages.help_text %}
+                            <small class="form-text text-muted">{{ form.languages.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Additional Information (Collapsible) -->
+                    <div class="section-header mt-4">
+                        <h3>
+                            <a class="btn btn-link text-decoration-none p-0" data-bs-toggle="collapse" href="#additionalInfo" role="button" aria-expanded="false">
+                                <i class="fas fa-plus-circle me-2"></i>Ek Bilgiler <small class="text-muted">(Opsiyonel)</small>
+                            </a>
+                        </h3>
+                    </div>
+                    
+                    <div class="collapse" id="additionalInfo">
+                        <div class="form-group">
+                            <label for="{{ form.certifications.id_for_label }}" class="form-label">{{ form.certifications.label }}</label>
+                            {{ form.certifications }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.projects.id_for_label }}" class="form-label">{{ form.projects.label }}</label>
+                            {{ form.projects }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.hobbies.id_for_label }}" class="form-label">{{ form.hobbies.label }}</label>
+                            {{ form.hobbies }}
+                        </div>
+                    </div>
+                    
+                    <!-- Social Media Links (Collapsible) -->
+                    <div class="section-header mt-4">
+                        <h3>
+                            <a class="btn btn-link text-decoration-none p-0" data-bs-toggle="collapse" href="#socialLinks" role="button" aria-expanded="false">
+                                <i class="fas fa-share-alt me-2"></i>Sosyal Medya ve Linkler <small class="text-muted">(Opsiyonel)</small>
+                            </a>
+                        </h3>
+                    </div>
+                    
+                    <div class="collapse" id="socialLinks">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.linkedin_url.id_for_label }}" class="form-label">
+                                        <i class="fab fa-linkedin me-2"></i>{{ form.linkedin_url.label }}
+                                    </label>
+                                    {{ form.linkedin_url }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.github_url.id_for_label }}" class="form-label">
+                                        <i class="fab fa-github me-2"></i>{{ form.github_url.label }}
+                                    </label>
+                                    {{ form.github_url }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.portfolio_url.id_for_label }}" class="form-label">
+                                        <i class="fas fa-globe me-2"></i>{{ form.portfolio_url.label }}
+                                    </label>
+                                    {{ form.portfolio_url }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-rocket me-2"></i>CV Oluştur
+                        </button>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Verileriniz güvenli şekilde saklanır
+                            </small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <style>
+        .section-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--bg-light);
+        }
+        
+        .section-header h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .section-header p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+        
+        .btn-link {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+        
+        .btn-link:hover {
+            color: var(--primary-dark) !important;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,430 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.name }} - CV Önizleme</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <style>
+        .preview-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .cv-preview {
+            background: white;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0 auto;
+            max-width: 850px;
+        }
+        
+        .preview-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .preview-nav {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .preview-content {
+            padding: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .section-title {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-value {
+            color: #212529;
+            font-size: 1rem;
+        }
+        
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .skill-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .social-link i {
+            margin-right: 0.5rem;
+        }
+        
+        .timeline-item {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-title {
+            font-weight: 700;
+            color: #212529;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-subtitle {
+            color: #6c757d;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-description {
+            color: #495057;
+            line-height: 1.6;
+        }
+        
+        .experience-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .preview-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="cv-preview">
+            <!-- Navigation -->
+            <div class="preview-nav">
+                <div>
+                    <a href="{% url 'profile_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                    </a>
+                </div>
+                <div>
+                    <h5 class="mb-0">CV Önizleme</h5>
+                </div>
+                <div>
+                    <a href="{% url 'resume' profile.id %}" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-download me-2"></i>PDF İndir
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Header -->
+            <div class="preview-header">
+                <h1 class="mb-3">{{ profile.name }}</h1>
+                <div class="d-flex justify-content-center flex-wrap gap-4">
+                    <span><i class="fas fa-envelope me-2"></i>{{ profile.email }}</span>
+                    <span><i class="fas fa-phone me-2"></i>{{ profile.phone }}</span>
+                    {% if profile.address %}
+                        <span><i class="fas fa-map-marker-alt me-2"></i>{{ profile.address|truncatewords:5 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="preview-content">
+                <!-- Professional Summary -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon"><i class="fas fa-user"></i></span>
+                        Profesyonel Özet
+                    </h2>
+                    <div class="timeline-item">
+                        <p class="timeline-description">{{ profile.summary }}</p>
+                        {% if profile.experience_years %}
+                            <div class="experience-badge">
+                                {{ experience_level }} ({{ profile.experience_years }} yıl)
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Contact & Basic Info -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon"><i class="fas fa-info-circle"></i></span>
+                        Kişisel Bilgiler
+                    </h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-label">Ad Soyad</div>
+                            <div class="info-value">{{ profile.name }}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">E-posta</div>
+                            <div class="info-value">{{ profile.email }}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Telefon</div>
+                            <div class="info-value">{{ profile.phone }}</div>
+                        </div>
+                        {% if profile.address %}
+                            <div class="info-card">
+                                <div class="info-label">Adres</div>
+                                <div class="info-value">{{ profile.address }}</div>
+                            </div>
+                        {% endif %}
+                        {% if profile.current_position %}
+                            <div class="info-card">
+                                <div class="info-label">Mevcut Pozisyon</div>
+                                <div class="info-value">{{ profile.current_position }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Education -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon"><i class="fas fa-graduation-cap"></i></span>
+                        Eğitim
+                    </h2>
+                    <div class="timeline-item">
+                        <div class="timeline-title">{{ profile.degree }}</div>
+                        <div class="timeline-subtitle">
+                            {{ profile.university }}
+                            {% if profile.graduation_year %} - {{ profile.graduation_year }}{% endif %}
+                            {% if profile.gpa %} (GPA: {{ profile.gpa }}){% endif %}
+                        </div>
+                    </div>
+                    {% if profile.school %}
+                        <div class="timeline-item">
+                            <div class="timeline-title">Lise Eğitimi</div>
+                            <div class="timeline-subtitle">{{ profile.school }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Work Experience -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon"><i class="fas fa-briefcase"></i></span>
+                        İş Deneyimi
+                    </h2>
+                    <div class="timeline-item">
+                        {% if profile.current_position %}
+                            <div class="timeline-title">{{ profile.current_position }}</div>
+                            <div class="timeline-subtitle">Mevcut Pozisyon</div>
+                        {% endif %}
+                        <div class="timeline-description">{{ profile.previous_work|linebreaks }}</div>
+                    </div>
+                </div>
+                
+                <!-- Skills -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon"><i class="fas fa-cogs"></i></span>
+                        Beceriler
+                    </h2>
+                    <div class="skills-container">
+                        {% for skill in skills_list %}
+                            <span class="skill-badge">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Languages -->
+                {% if profile.languages %}
+                    <div class="section">
+                        <h2 class="section-title">
+                            <span class="section-icon"><i class="fas fa-language"></i></span>
+                            Dil Becerileri
+                        </h2>
+                        <div class="timeline-item">
+                            <div class="timeline-description">{{ profile.languages|linebreaks }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Certifications -->
+                {% if profile.certifications %}
+                    <div class="section">
+                        <h2 class="section-title">
+                            <span class="section-icon"><i class="fas fa-certificate"></i></span>
+                            Sertifikalar
+                        </h2>
+                        <div class="timeline-item">
+                            <div class="timeline-description">{{ profile.certifications|linebreaks }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Projects -->
+                {% if profile.projects %}
+                    <div class="section">
+                        <h2 class="section-title">
+                            <span class="section-icon"><i class="fas fa-project-diagram"></i></span>
+                            Projeler
+                        </h2>
+                        <div class="timeline-item">
+                            <div class="timeline-description">{{ profile.projects|linebreaks }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Hobbies -->
+                {% if profile.hobbies %}
+                    <div class="section">
+                        <h2 class="section-title">
+                            <span class="section-icon"><i class="fas fa-heart"></i></span>
+                            Hobiler ve İlgi Alanları
+                        </h2>
+                        <div class="timeline-item">
+                            <div class="timeline-description">{{ profile.hobbies|linebreaks }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Social Links -->
+                {% if profile.has_social_links %}
+                    <div class="section">
+                        <h2 class="section-title">
+                            <span class="section-icon"><i class="fas fa-link"></i></span>
+                            Sosyal Medya ve Bağlantılar
+                        </h2>
+                        <div class="social-links">
+                            {% if profile.linkedin_url %}
+                                <a href="{{ profile.linkedin_url }}" target="_blank" class="social-link">
+                                    <i class="fab fa-linkedin"></i>LinkedIn
+                                </a>
+                            {% endif %}
+                            {% if profile.github_url %}
+                                <a href="{{ profile.github_url }}" target="_blank" class="social-link">
+                                    <i class="fab fa-github"></i>GitHub
+                                </a>
+                            {% endif %}
+                            {% if profile.portfolio_url %}
+                                <a href="{{ profile.portfolio_url }}" target="_blank" class="social-link">
+                                    <i class="fas fa-globe"></i>Portfolio
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Creation Info -->
+                <div class="section">
+                    <div class="text-center text-muted">
+                        <small>
+                            <i class="fas fa-calendar me-2"></i>
+                            CV oluşturulma tarihi: {{ profile.created_at|date:"d F Y, H:i" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.name }} - CV</title>
+    <style>
+        /* PDF Specific Styles */
+        @page {
+            size: A4;
+            margin: 0.75in;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            font-size: 11pt;
+        }
+        
+        .cv-container {
+            max-width: 100%;
+            background: white;
+        }
+        
+        /* Header Section */
+        .cv-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .cv-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cv-header .contact-info {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+        
+        .cv-header .contact-info span {
+            margin: 0 1rem;
+        }
+        
+        /* Section Styles */
+        .cv-section {
+            margin-bottom: 2rem;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-icon {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Summary Section */
+        .summary-text {
+            text-align: justify;
+            line-height: 1.7;
+            color: #4a5568;
+            font-size: 11pt;
+        }
+        
+        /* Two Column Layout */
+        .cv-content {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .cv-main {
+            flex: 2;
+        }
+        
+        .cv-sidebar {
+            flex: 1;
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        /* Education & Experience */
+        .timeline-item {
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 3px solid #667eea;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+        }
+        
+        .timeline-title {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+        
+        .timeline-subtitle {
+            color: #718096;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-description {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        /* Skills */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .skill-tag {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* Contact Info in Sidebar */
+        .contact-item {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-icon {
+            width: 20px;
+            margin-right: 0.75rem;
+            color: #667eea;
+        }
+        
+        /* Social Links */
+        .social-links {
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            display: block;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Lists */
+        .cv-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .cv-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        .cv-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        /* Experience Level Badge */
+        .experience-badge {
+            background: #48bb78;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        /* Print Optimizations */
+        @media print {
+            body {
+                font-size: 10pt;
+            }
+            
+            .cv-header {
+                padding: 1.5rem;
+            }
+            
+            .cv-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .cv-content {
+                gap: 1.5rem;
+            }
+            
+            .cv-sidebar {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cv-container">
+        <!-- Header -->
+        <div class="cv-header">
+            <h1>{{ profile.name }}</h1>
+            <div class="contact-info">
+                <span>✉ {{ profile.email }}</span>
+                <span>☎ {{ profile.phone }}</span>
+                {% if profile.address %}
+                    <span>📍 {{ profile.address|truncatewords:6 }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="cv-content">
+            <!-- Main Content -->
+            <div class="cv-main">
+                <!-- Professional Summary -->
+                <div class="cv-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">👤</span>
+                        Profesyonel Özet
+                    </h2>
+                    <p class="summary-text">{{ profile.summary }}</p>
+                    {% if profile.experience_years %}
+                        <div class="experience-badge">{{ experience_level }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Work Experience -->
+                <div class="cv-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">💼</span>
+                        İş Deneyimi
+                    </h2>
+                    <div class="timeline-item">
+                        {% if profile.current_position %}
+                            <div class="timeline-title">{{ profile.current_position }}</div>
+                            <div class="timeline-subtitle">Mevcut Pozisyon</div>
+                        {% endif %}
+                        <div class="timeline-description">{{ profile.previous_work|linebreaks }}</div>
+                    </div>
+                </div>
+                
+                <!-- Education -->
+                <div class="cv-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">🎓</span>
+                        Eğitim
+                    </h2>
+                    <div class="timeline-item">
+                        <div class="timeline-title">{{ profile.degree }}</div>
+                        <div class="timeline-subtitle">
+                            {{ profile.university }}
+                            {% if profile.graduation_year %}
+                                - {{ profile.graduation_year }}
+                            {% endif %}
+                            {% if profile.gpa %}
+                                (GPA: {{ profile.gpa }})
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if profile.school %}
+                        <div class="timeline-item">
+                            <div class="timeline-title">Lise Eğitimi</div>
+                            <div class="timeline-subtitle">{{ profile.school }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Projects -->
+                {% if profile.projects %}
+                    <div class="cv-section">
+                        <h2 class="section-title">
+                            <span class="section-icon">🚀</span>
+                            Projeler
+                        </h2>
+                        <div class="timeline-description">{{ profile.projects|linebreaks }}</div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="cv-sidebar">
+                <!-- Contact Details -->
+                <div class="cv-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">📞</span>
+                        İletişim
+                    </h3>
+                    <div class="contact-item">
+                        <span class="contact-icon">✉</span>
+                        <span>{{ profile.email }}</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">☎</span>
+                        <span>{{ profile.phone }}</span>
+                    </div>
+                    {% if profile.address %}
+                        <div class="contact-item">
+                            <span class="contact-icon">📍</span>
+                            <span>{{ profile.address }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Skills -->
+                <div class="cv-section">
+                    <h3 class="section-title">
+                        <span class="section-icon">⚡</span>
+                        Beceriler
+                    </h3>
+                    <div class="skills-grid">
+                        {% for skill in skills_list %}
+                            <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Languages -->
+                {% if profile.languages %}
+                    <div class="cv-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">🌐</span>
+                            Diller
+                        </h3>
+                        <div class="timeline-description">{{ profile.languages|linebreaks }}</div>
+                    </div>
+                {% endif %}
+                
+                <!-- Certifications -->
+                {% if profile.certifications %}
+                    <div class="cv-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">🏆</span>
+                            Sertifikalar
+                        </h3>
+                        <div class="timeline-description">{{ profile.certifications|linebreaks }}</div>
+                    </div>
+                {% endif %}
+                
+                <!-- Hobbies -->
+                {% if profile.hobbies %}
+                    <div class="cv-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">🎯</span>
+                            Hobiler
+                        </h3>
+                        <div class="timeline-description">{{ profile.hobbies|linebreaks }}</div>
+                    </div>
+                {% endif %}
+                
+                <!-- Social Links -->
+                {% if profile.has_social_links %}
+                    <div class="cv-section">
+                        <h3 class="section-title">
+                            <span class="section-icon">🔗</span>
+                            Bağlantılar
+                        </h3>
+                        <div class="social-links">
+                            {% if profile.linkedin_url %}
+                                <a href="{{ profile.linkedin_url }}" class="social-link">LinkedIn Profili</a>
+                            {% endif %}
+                            {% if profile.github_url %}
+                                <a href="{{ profile.github_url }}" class="social-link">GitHub Profili</a>
+                            {% endif %}
+                            {% if profile.portfolio_url %}
+                                <a href="{{ profile.portfolio_url }}" class="social-link">Portfolio Website</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
